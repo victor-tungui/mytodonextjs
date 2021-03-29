@@ -1,9 +1,9 @@
-function MyActivitiesPage() {
+function HomePage() {
   return (
     <div>
-      <h1>My Activities</h1>
+      <h1>Welcome to my ToDo Application</h1>
     </div>
   );
 }
 
-export default MyActivitiesPage;
+export default HomePage;
