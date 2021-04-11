@@ -8,7 +8,7 @@ function AuthPage() {
 export default AuthPage;
 
 export async function getServerSideProps(context) {
-  let auth = await validateSession(context.req);
+  const auth = await validateSession(context.req);
 
   if (auth.session) {
     return auth.redirectLoggedIn;

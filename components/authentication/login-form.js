@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { signIn } from 'next-auth/client';
 import { useRouter } from 'next/router';
 
@@ -7,8 +7,11 @@ function LoginForm() {
   let passwordRef = useRef();
   const router = useRouter();
 
+  const [loginError, setloginError] = useState(null);
+
   async function submitLoginHandler(event) {
     event.preventDefault();
+    setloginError(null);
 
     const emailValue = emailRef.current.value;
     const passwordValue = passwordRef.current.value;
@@ -21,7 +24,19 @@ function LoginForm() {
 
     if (!loginResult.error) {
       router.replace('/activities');
+    } else {
+      setloginError(loginResult.error);
     }
+  }
+
+  // Display Error
+  let errorContent = (
+    <div className='alert alert-danger mt-2 text-center' role='alert'>
+      The credentials provided are invalid!
+    </div>
+  );
+  if (!loginError) {
+    errorContent = null;
   }
 
   return (
@@ -58,14 +73,20 @@ function LoginForm() {
           </div>
         </div>
 
-        <button
-          type='button'
-          className='btn btn-primary'
-          onClick={submitLoginHandler}
-        >
-          Sign in
-        </button>
+        <div className='row mb-3'>
+          <div className='col-sm-2'></div>
+          <div className='col-sm-10'>
+            <button
+              type='button'
+              className='btn btn-primary'
+              onClick={submitLoginHandler}
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
       </form>
+      {errorContent}
     </div>
   );
 }

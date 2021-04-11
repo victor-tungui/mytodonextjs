@@ -1,23 +1,37 @@
-import { getSession } from 'next-auth/client';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import { useEffect } from 'react';
+import useSWR from 'swr';
+
 import { validateSession } from '../../library/session/session-validator';
+import ActivityList from '../../components/activities/activity-list';
+import mainAxios from '../../library/axios/main-axios';
 
 function MyActivitiesPage(props) {
-  // const [isLoading, setIsLoading] = useState(true);
-  // const router = useRouter();
+  const fetcher = (url) =>
+    mainAxios
+      .get(url, {
+        headers: { Authorization: `Bearer ${props.session.user.apiToken}` },
+      })
+      .then((res) => res.data);
 
-  // useEffect(() => {
-  //   getSession().then((session) => {
-  //     setIsLoading(false);
-  //   });
-  // }, [router]);
+  const { data, error } = useSWR('/activities', fetcher);
 
-  // if (isLoading) {
-  //   return <p>Loading...</p>;
-  // }
+  if (error) {
+    return (
+      <div className='alert alert-danger' role='alert'>
+        Failed to load
+      </div>
+    );
+  }
 
-  return <p>Your current Activiities</p>;
+  if (!data) {
+    return (
+      <div className='alert alert-info' role='alert'>
+        Loading ...
+      </div>
+    );
+  }
+
+  return <ActivityList activities={data} />;
 }
 
 export default MyActivitiesPage;

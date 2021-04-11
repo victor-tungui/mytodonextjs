@@ -1,6 +1,6 @@
 import NextAuth from 'next-auth';
 import Providers from 'next-auth/providers';
-import axios from 'axios';
+import mainAxios from '../../../library/axios/main-axios';
 
 export default NextAuth({
   session: {
@@ -9,19 +9,10 @@ export default NextAuth({
   providers: [
     Providers.Credentials({
       async authorize(credentials) {
-        const loginRequest = await axios.post(
-          'http://localhost:54637/api/Authentication/Login',
-          {
-            Email: credentials.email,
-            Password: credentials.password,
-          },
-          {
-            headers: {
-              Accept: '*/*',
-              'Content-Type': 'application/json',
-            },
-          }
-        );
+        const loginRequest = await mainAxios.post('/Authentication/Login', {
+          Email: credentials.email,
+          Password: credentials.password,
+        });
 
         if (loginRequest) {
           return {
