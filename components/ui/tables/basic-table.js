@@ -1,5 +1,5 @@
 function BasicTable(props) {
-  const { header, id } = props.definition;
+  const { header, id } = props.headerConfig;
 
   return (
     <table className='table' id={id} key={id}>

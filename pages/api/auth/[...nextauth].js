@@ -5,6 +5,10 @@ import mainAxios from '../../../library/axios/main-axios';
 export default NextAuth({
   session: {
     jwt: true,
+    maxAge: 30 * 60, // 30 Minutes
+  },
+  pages: {
+    signIn: '/authentication',
   },
   providers: [
     Providers.Credentials({

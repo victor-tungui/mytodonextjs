@@ -1,5 +1,6 @@
-import { useEffect } from 'react';
 import useSWR from 'swr';
+import { Fragment } from 'react';
+import { useRouter } from 'next/router';
 
 import { validateSession } from '../../library/session/session-validator';
 import ActivityList from '../../components/activities/activity-list';
@@ -12,8 +13,9 @@ function MyActivitiesPage(props) {
         headers: { Authorization: `Bearer ${props.session.user.apiToken}` },
       })
       .then((res) => res.data);
-
   const { data, error } = useSWR('/activities', fetcher);
+
+  const router = useRouter();
 
   if (error) {
     return (
@@ -31,7 +33,22 @@ function MyActivitiesPage(props) {
     );
   }
 
-  return <ActivityList activities={data} />;
+  function addNewHandler(event) {
+    router.replace('/activities/new');
+  }
+
+  return (
+    <Fragment>
+      <div className='row mt-2'>
+        <div className='col-md'>
+          <button className='btn btn-primary' onClick={addNewHandler}>
+            Add New
+          </button>
+        </div>
+      </div>
+      <ActivityList activities={data} />
+    </Fragment>
+  );
 }
 
 export default MyActivitiesPage;

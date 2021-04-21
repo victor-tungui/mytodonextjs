@@ -1,4 +1,5 @@
 import BasicTable from '../ui/tables/basic-table';
+import ActivityRow from '../activities/activity-row';
 
 function ActivityList(props) {
   const { activities } = props;
@@ -15,19 +16,9 @@ function ActivityList(props) {
   };
 
   return (
-    <BasicTable definition={tableDefinition}>
+    <BasicTable headerConfig={tableDefinition}>
       {activities.map((activity) => (
-        <tr key={activity.id}>
-          <td>{activity.name}</td>
-          <td>{activity.description}</td>
-          <td>{new Date(activity.created).toDateString()}</td>
-          <td>{activity.status}</td>
-          <td>
-            <a href='#' className='link-primary'>
-              View
-            </a>
-          </td>
-        </tr>
+        <ActivityRow activity={activity} />
       ))}
     </BasicTable>
   );
