@@ -2,7 +2,7 @@ function ActivityRow(props) {
   const { activity } = props;
 
   return (
-    <tr key={activity.id}>
+    <tr>
       <td>{activity.name}</td>
       <td>{activity.description}</td>
       <td>{new Date(activity.created).toDateString()}</td>

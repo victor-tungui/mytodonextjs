@@ -18,7 +18,7 @@ function ActivityList(props) {
   return (
     <BasicTable headerConfig={tableDefinition}>
       {activities.map((activity) => (
-        <ActivityRow activity={activity} />
+        <ActivityRow activity={activity} key={activity.id} />
       ))}
     </BasicTable>
   );
