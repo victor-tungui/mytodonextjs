@@ -1,6 +1,9 @@
 import useInput from '../../hooks/use-input';
-import mainAxios from '../../library/axios/main-axios';
 import { useRouter } from 'next/router';
+import {
+  createActivity,
+  updateActivity,
+} from '../../library/activities/activities-util';
 
 const activityNameValidator = (value) =>
   value.trim() !== '' && value.trim().length <= 50;
@@ -17,6 +20,15 @@ const expirationDateValidator = (value) => {
 const ActivityForm = (props) => {
   const router = useRouter();
 
+  // New or Update Variables
+  const isNew = props.isNew === 'true';
+  const submitButtonText = isNew ? 'Create' : 'Update';
+  let activity = null;
+
+  if (props.activity && !isNew) {
+    activity = { ...props.activity };
+  }
+
   const {
     value: activityNameValue,
     hasError: activityNameHasError,
@@ -24,7 +36,7 @@ const ActivityForm = (props) => {
     inputBlurHanlder: activityNameBlurHanlder,
     isValid: activityNameIsValid,
     resetHandler: activityNameReset,
-  } = useInput(activityNameValidator);
+  } = useInput(activityNameValidator, activity?.name ?? '');
 
   const {
     value: descriptionValue,
@@ -33,7 +45,7 @@ const ActivityForm = (props) => {
     inputBlurHanlder: descriptionBlurHandler,
     isValid: descriptionIsValid,
     resetHandler: descriptionReset,
-  } = useInput(descriptionValidator);
+  } = useInput(descriptionValidator, activity?.description ?? '');
 
   const {
     value: expirationValue,
@@ -42,10 +54,9 @@ const ActivityForm = (props) => {
     inputBlurHanlder: expirationBlurHandler,
     isValid: expirationIsValid,
     resetHandler: expirationReset,
-  } = useInput(expirationDateValidator);
+  } = useInput(expirationDateValidator, activity?.expiration ?? '');
 
   let formIsValid = false;
-
   let activityCss = activityNameHasError
     ? 'form-control is-invalid'
     : 'form-control';
@@ -76,21 +87,21 @@ const ActivityForm = (props) => {
         expiration: expirationValue,
       };
 
-      try {
-        const activityResult = await createActivity(activity);
-        router.replace('/activities');
-      } catch (error) {
-        console.log(error);
+      if (isNew) {
+        try {
+          await createActivity(props.session.user.apiToken, activity);
+          router.replace('/activities');
+        } catch (error) {
+          console.log(error);
+        }
+      } else {
+        updateActivity(props.session.user.apiToken, props.activity.id, activity)
+          .then(() => {
+            router.replace('/activities');
+          })
+          .catch((error) => console.log(error));
       }
     }
-  };
-
-  const createActivity = async (newActivity) => {
-    const newActivityResult = await mainAxios.post('/activities', newActivity, {
-      headers: { Authorization: `Bearer ${props.session.user.apiToken}` },
-    });
-
-    return newActivityResult;
   };
 
   return (
@@ -173,17 +184,15 @@ const ActivityForm = (props) => {
         </div>
 
         <div className='row mb-3'>
-          <label
-            htmlFor='expiration'
-            className='col-sm-2 col-form-label'
-          ></label>
+          <label htmlFor='submit' className='col-sm-2 col-form-label' />
           <div className='col-sm-10'>
             <button
+              id='submit'
               type='submit'
               className='btn btn-primary'
               disabled={!formIsValid}
             >
-              Create Activity
+              {submitButtonText}
             </button>
           </div>
         </div>

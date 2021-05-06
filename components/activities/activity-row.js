@@ -1,6 +1,8 @@
 function ActivityRow(props) {
   const { activity } = props;
 
+  const activityUrl = `/activities/${activity.id}`;
+
   return (
     <tr>
       <td>{activity.name}</td>
@@ -8,7 +10,7 @@ function ActivityRow(props) {
       <td>{new Date(activity.created).toDateString()}</td>
       <td>{activity.status}</td>
       <td>
-        <a href='#' className='link-primary'>
+        <a href={activityUrl} className='link-primary'>
           View
         </a>
       </td>
