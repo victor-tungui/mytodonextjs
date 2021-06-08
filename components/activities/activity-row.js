@@ -2,6 +2,7 @@ function ActivityRow(props) {
   const { activity } = props;
 
   const activityUrl = `/activities/${activity.id}`;
+  const todosUrl = `/todos/${activity.id}`;
 
   return (
     <tr>
@@ -12,6 +13,9 @@ function ActivityRow(props) {
       <td>
         <a href={activityUrl} className='link-primary'>
           View
+        </a>
+        <a href={todosUrl} className='link-primary ms-1'>
+          Todos
         </a>
       </td>
     </tr>
