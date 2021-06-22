@@ -52,3 +52,24 @@ export const createTodo = (activity, user) => {
     }
   };
 };
+
+export const deleteTodo = (activity, user) => {
+  return async (dispatch) => {
+    const deleteTodo = async () => {
+      const header = { Authorization: `Bearer ${user.apiToken}` };
+
+      const deletePush = await mainAxios.delete(`/todos/${activity.id}`, {
+        headers: header,
+      });
+
+      return deletePush.data;
+    };
+
+    try {
+      await deleteTodo();
+      dispatch(todoActions.delete(activity));
+    } catch (error) {
+      consaole.load(error);
+    }
+  };
+};

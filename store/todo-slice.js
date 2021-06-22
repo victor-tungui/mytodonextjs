@@ -53,6 +53,24 @@ const todoSlice = createSlice({
       state.closed = action.payload.closed;
       state.todos = action.payload.items;
     },
+    delete(state, action) {
+      const todo = action.payload;
+      const itemIndex = state.todos.findIndex((i) => i.id === todo.id);
+
+      if (itemIndex > -1) {
+        state.total = state.total - 1;
+
+        if (todo.status === 3) {
+          state.closed = state.closed - 1;
+        }
+
+        if (todo.status === 1) {
+          state.open = state.open - 1;
+        }
+
+        state.todos.splice(itemIndex, 1);
+      }
+    },
   },
 });
 

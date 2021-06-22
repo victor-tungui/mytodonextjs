@@ -1,9 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { validateSession } from '../../library/session/session-validator';
-import { getTodosItems, createTodo } from '../../store/todo-actions';
+import {
+  getTodosItems,
+  createTodo,
+  deleteTodo,
+} from '../../store/todo-actions';
 import { Fragment } from 'react';
 import useInput from '../../hooks/use-input';
+import DeleteConfirmModal from '../../components/ui/modal/todo-delete-modal';
 
 // Input Validator
 const taskNameValidation = (value) =>
@@ -12,6 +17,8 @@ const taskNameValidation = (value) =>
 const TodoPage = (props) => {
   const dispatch = useDispatch();
   let todoState = useSelector((state) => state);
+  let [showModal, setShowModal] = useState(false);
+  let [todo, setTodo] = useState(null);
 
   const {
     value: taskNameValue,
@@ -44,6 +51,26 @@ const TodoPage = (props) => {
 
   const addClickHandler = () => {
     createOrUpdateActivity();
+  };
+
+  const deleteClickHanlder = (todoId) => {
+    let todo = todoState.todos.find((t) => t.id === todoId);
+
+    if (todo) {
+      setShowModal(true);
+      let newTodo = { ...todo };
+      setTodo(newTodo);
+    }
+  };
+
+  const deleteConfirmedHandler = () => {
+    dispatch(deleteTodo(todo, props.session.user));
+    setShowModal(false);
+    setTodo(null);
+  };
+
+  const cancelConfirmHandler = () => {
+    setShowModal(false);
   };
 
   const createOrUpdateActivity = () => {
@@ -145,7 +172,11 @@ const TodoPage = (props) => {
                 </td>
                 <td>{todo.name}</td>
                 <td>
-                  <button type='button' className='btn btn-primary'>
+                  <button
+                    type='button'
+                    className='btn btn-primary'
+                    onClick={() => deleteClickHanlder(todo.id)}
+                  >
                     Delete
                   </button>
                 </td>
@@ -153,6 +184,15 @@ const TodoPage = (props) => {
             ))}
         </tbody>
       </table>
+
+      {showModal && (
+        <DeleteConfirmModal
+          dialogId='dlgDeleteTodo'
+          todoName={todo.name}
+          deleteConfirmHandler={deleteConfirmedHandler}
+          cancelConfirmHandler={cancelConfirmHandler}
+        />
+      )}
     </Fragment>
   );
 };
