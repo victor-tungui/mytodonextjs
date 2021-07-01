@@ -14,7 +14,7 @@ function Navigation() {
   return (
     <nav className='navbar navbar-expand-lg navbar-dark bg-dark'>
       <div className='container-fluid'>
-        <a className='navbar-brand' href='#'>
+        <a className='navbar-brand' href='/'>
           TODO App
         </a>
         <div className='collapse navbar-collapse' id='navbarCollapse'>
@@ -44,6 +44,13 @@ function Navigation() {
               <li className='nav-item'>
                 <Link href='/authentication'>
                   <a className='nav-link'>Log In</a>
+                </Link>
+              </li>
+            )}
+            {!isLoggedIn && (
+              <li className='nav-item'>
+                <Link href='/authentication/register'>
+                  <a className='nav-link'>Register</a>
                 </Link>
               </li>
             )}
