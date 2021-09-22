@@ -11,6 +11,7 @@
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.21.2",
     "bootstrap": "^5.0.0-beta3",
+    "immer": "^9.0.6",
     "next": "11.1.1",
     "next-auth": "^3.13.3",
     "react": "17.0.1",
